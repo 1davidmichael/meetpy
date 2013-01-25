@@ -2,7 +2,21 @@
 
 # Python script to scp keys and other config files to servers upon first run.
 
-import paramiko, os, getpass, argparse
+"""pymeet.
+
+Usage:
+  pymeet.py [ -v --username=<name>  --identity-file=<path>] (<server>...)
+
+Options:
+  -h --help                     Show this screen.
+  -v --verbose                  Verbose output.
+  -u --username=<name>          Define username.
+  -i --identity-file=<path>     Define path to identity file.
+
+"""
+
+from docopt import docopt
+import paramiko, os, getpass
 
 
 def deploy_key(key, server, username, password):
@@ -23,24 +37,21 @@ def deploy_key(key, server, username, password):
     print 'Creating folders or keys has failed'
 
 def run():
-  parser =  argparse.ArgumentParser()
-  parser.add_argument('server', help='Specify server(s) to add key', type=str, nargs='+')
-  parser.add_argument('-u', "--username", help='Specify username to use', type=str)
-  parser.add_argument('-i', "--identity", help='Specify identity file to use', type=str)
-  args = parser.parse_args()
-  hosts =  args.server
 
-  if args.identity:
-    key = args.identity
+  args = docopt(__doc__, version='Meetpy script 0.2')
+  if args['<name>']:
+    username = args['<name>']
+  else:
+    username = os.getlogin()
+
+  if args['<path>']:
+    key = args['<path>']
   else:
     key = open(os.path.expanduser('~/.ssh/id_rsa.pub')).read()
 
-  password = getpass.getpass()
+  hosts =  args['<server>']
 
-  if args.username:
-    username = args.username
-  else:
-    username = os.getlogin()
+  password = getpass.getpass()
 
   for host in hosts:
     deploy_key(key, host, username, password)
@@ -48,4 +59,4 @@ def run():
 if __name__ == '__main__':
   run()
 
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4 
+# vim: tabstop=8 expandtab shiftwidth=2 softtabstop=2
