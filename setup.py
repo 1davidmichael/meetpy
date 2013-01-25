@@ -8,12 +8,13 @@ def read(fname):
 
 setup(
 	name = 'meet',
-	version = '0.0.1',
+	version = '0.2',
 	author_email = '1.david.michael@gmail.com',
 	packages = ['meet'],
 	long_description=read('README.rst'),
 	install_requires = [
 		'paramiko',
+		'docopt',
 	],
 	entry_points = {
 		'console_scripts':
